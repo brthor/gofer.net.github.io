@@ -28,9 +28,25 @@ Inspired by Celery for Python, it allows you to quickly queue code execution on 
 
 - Use natural expression syntax to queue jobs for execution.
 
+- Queued jobs are persisted, and automatically run by the first available worker.
+
 - Scale your worker pool by simply adding new nodes.
 
 - Backed by Redis, all tasks are persistent.
+
+Here is a minimal example demonstrating queuing and running a job on the same machine:
+
+```c#
+public static async Task Main(string[] args)
+{
+    var redisConnectionString = "127.0.0.1:6379";
+
+    var taskQueue = TaskQueue.Redis(redisConnectionString);
+    
+    taskQueue.Enqueue(() => RunTask("echo"));
+    taskQueue.ExecuteNext();
+}
+```
 
 ## Getting Started
 
