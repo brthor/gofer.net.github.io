@@ -43,8 +43,8 @@ public static async Task Main(string[] args)
 
     var taskQueue = TaskQueue.Redis(redisConnectionString);
     
-    taskQueue.Enqueue(() => RunTask("echo"));
-    taskQueue.ExecuteNext();
+    await taskQueue.Enqueue(() => RunTask("echo"));
+    await taskQueue.ExecuteNext();
 }
 ```
 
