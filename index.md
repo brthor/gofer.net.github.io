@@ -6,11 +6,13 @@ description: "Gofer.NET is an easy C# API for distributed background tasks/jobs 
 permalink: /
 ---
 
-# Easy distributed background tasks/jobs for .NET Core.
+# Easy distributed tasks/jobs for .NET Core.
+{: .fs-9 }
 
 Use Gofer.NET to run background jobs (one-off, scheduled, or recurring) on a worker pool easily.
+{: .fs-6 .fw-300 }
 
-===============
+---
 
 ## What is this?
 
