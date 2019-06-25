@@ -4,6 +4,7 @@ title: Home
 nav_order: 1
 description: "Gofer.NET is an easy C# API for distributed background tasks/jobs for .NET Core."
 permalink: /
+has_toc: true
 ---
 
 # Easy distributed tasks/jobs for .NET Core.
@@ -12,10 +13,12 @@ permalink: /
 Use Gofer.NET to run background jobs (one-off, scheduled, or recurring) on a worker pool easily.
 {: .fs-6 .fw-300 }
 
-[Get started now](#getting-started){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 } [View it on GitHub](https://github.com/pmarsceill/just-the-docs){: .btn .fs-5 .mb-4 .mb-md-0 }
+[Get started now](#getting-started){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 } [View it on GitHub](https://github.com/brthor/Gofer.NET){: .btn .fs-5 .mb-4 .mb-md-0 }
 
 
 ---
+
+{:toc}
 
 ## What is this?
 
@@ -65,7 +68,7 @@ $ dotnet add package Gofer.NET --version 1.0.0-*
 This example `Program.cs` shows how to queue jobs for the worker pool to process, then start a worker to go and run them. 
 
 Some important notes:
- - Workers would usually be separate from the code queueing the jobs, this is purely to give an example.
+ - Workers would usually be on a separate machine from the code queueing the jobs, this is purely to give an example.
 
  - More workers can be added at any time, and will start picking up jobs off the queue immediately.
 
