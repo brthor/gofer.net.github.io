@@ -28,9 +28,9 @@ Inspired by celery for python, this is a distributed job runner for .NET Standar
 
 ### Install the dotnet cli
 
-We recommend using the (dotnet cli)[https://dotnet.microsoft.com/download] to get started, but it's not a necessity. 
+We recommend using the [dotnet cli](https://dotnet.microsoft.com/download) to get started, but it's not a necessity. 
 
-The dotnet cli is part of the (.NET Core SDK)[https://dotnet.microsoft.com/download].
+The dotnet cli is part of the [.NET Core SDK](https://dotnet.microsoft.com/download).
 
 ### Start a Redis instance.
 
