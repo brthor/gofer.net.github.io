@@ -18,7 +18,19 @@ Use Gofer.NET to run background jobs (one-off, scheduled, or recurring) on a wor
 
 ---
 
-{:toc}
+## A minimal example.
+
+```c#
+public static async Task Main(string[] args)
+{
+    var redisConnectionString = "127.0.0.1:6379";
+
+    var taskQueue = TaskQueue.Redis(redisConnectionString);
+    
+    await taskQueue.Enqueue(() => Console.WriteLine("echo"));
+    await taskQueue.ExecuteNext();
+}
+```
 
 ## What is this?
 
@@ -34,20 +46,6 @@ Inspired by Celery for Python, it allows you to quickly queue code execution on 
 
 - Backed by Redis, all tasks are persistent.
 
-Here is a minimal example demonstrating queuing and running a job on the same machine:
-
-```c#
-public static async Task Main(string[] args)
-{
-    var redisConnectionString = "127.0.0.1:6379";
-
-    var taskQueue = TaskQueue.Redis(redisConnectionString);
-    
-    await taskQueue.Enqueue(() => RunTask("echo"));
-    await taskQueue.ExecuteNext();
-}
-```
-
 ## Getting Started
 
 ### Install the dotnet cli.
@@ -58,7 +56,7 @@ The dotnet cli is part of the [.NET Core SDK](https://dotnet.microsoft.com/downl
 
 ### Start a Redis instance.
 
-We recommend using (docker)[] to start a local Redis instance for testing. Setting up a production-level Redis instance is out of the scope of this guide.
+We recommend using [docker](https://docs.docker.com/install/) to start a local Redis instance for testing. Setting up a production-level Redis instance is out of the scope of this guide.
 
 ```bash
 $ docker run -d -p 127.0.0.1:6379:6379 redis:4-alpine

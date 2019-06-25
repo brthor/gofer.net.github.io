@@ -142,7 +142,7 @@ public class Program
 Scheduled jobs are jobs that will only be run once, but not until at least a certain `DateTime`.
 
  - The `TaskScheduler` runs as a part of the worker, so at least one running worker is required for Scheduled Jobs execution times to be monitored.
- - In a backed up system, a scheduled job may be run after the specified DateTime, but never before it.
+ - If the task queue is filling faster than workers are running jobs, a scheduled job may be run after the specified DateTime, but never before it.
  - Incorrect system time set on the worker may cause unexpected run times.
  - Scheduling a job in the past will cause it to be run immediately (with a slight delay).
 
@@ -173,5 +173,6 @@ public class Program
 
 Recurring Jobs are set up to be run on an interval. You may specify a `TimeSpan` based interval, or use a 6-part crontab to specify the interval.
 
-- If there are no running workers, recurring tasks will not just stack up on the queue to be run later. At least one running worker is required to process recurring tasks. If the workers are down for a while, recurring tasks will run at the next interval when the workers are started back up, but won't run previous intervals.
-- Recurring tasks may be updated or canceled.
+If there are no running workers, recurring tasks will not just stack up on the queue to be run later. At least one running worker is required to process recurring tasks. If the workers are down for a while, recurring tasks will run at the next interval when the workers are started back up, but won't run previous intervals.
+
+Recurring tasks may be updated or canceled. They will continue to run until cancelled.
