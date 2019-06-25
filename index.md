@@ -12,11 +12,16 @@ permalink: /
 Use Gofer.NET to run background jobs (one-off, scheduled, or recurring) on a worker pool easily.
 {: .fs-6 .fw-300 }
 
+[Get started now](#getting-started){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 } [View it on GitHub](https://github.com/pmarsceill/just-the-docs){: .btn .fs-5 .mb-4 .mb-md-0 }
+
+
 ---
 
 ## What is this?
 
-Inspired by celery for python, this is a distributed job runner for .NET Standard 2.0 Applications.
+This is a distributed job runner for .NET Standard 2.0 Applications.
+
+Inspired by Celery for Python, it allows you to quickly queue code execution on a worker pool.
 
 - Use natural expression syntax to queue jobs for execution.
 
@@ -26,7 +31,7 @@ Inspired by celery for python, this is a distributed job runner for .NET Standar
 
 ## Getting Started
 
-### Install the dotnet cli
+### Install the dotnet cli.
 
 We recommend using the [dotnet cli](https://dotnet.microsoft.com/download) to get started, but it's not a necessity. 
 
@@ -77,7 +82,8 @@ public class Program
         // Queue up a Sample Job
         await taskClient.TaskQueue.Enqueue(() => SampleJobFunction("Hello World!"));
         
-        // Start the task listener, effectively turning this node into a worker.
+        // Start the task listener, effectively turning this process into a worker.
+        // NOTE: This will loop endlessly waiting for new tasks.
         await taskClient.Listen();
     }
     
