@@ -38,7 +38,7 @@
               {% endif %}
 
               {% if node.explicit_nav_children %}
-                <ul class="navigation-list-child-list {% if node.show_nav_children %} d-block{%endif}">
+                <ul class="navigation-list-child-list {% if node.show_nav_children %} d-block{% endif %}">
                   {% for child in node.explicit_nav_children %}
                       <li class="navigation-list-item {% if page.url == child.url %} active{% endif %}">
                         {% if page.url == child.url %}
