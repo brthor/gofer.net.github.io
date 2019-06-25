@@ -11,7 +11,7 @@
               <a href="{{ node.url | absolute_url }}" class="navigation-list-link{% if page.url == node.url %} active{% endif %}">{{ node.title }}</a>
               {% if node.has_children %}
                 {% assign children_list = site.html_pages | sort:"nav_order" %}
-                <ul class="navigation-list-child-list d-block">
+                <ul class="navigation-list-child-list">
                   {% for child in children_list %}
                     {% if child.parent == node.title %}
                       <li class="navigation-list-item {% if page.url == child.url or page.parent == child.title %} active{% endif %}">
@@ -38,7 +38,7 @@
               {% endif %}
 
               {% if node.explicit_nav_children %}
-                <ul class="navigation-list-child-list active">
+                <ul class="navigation-list-child-list d-block">
                   {% for child in node.explicit_nav_children %}
                       <li class="navigation-list-item {% if page.url == child.url %} active{% endif %}">
                         {% if page.url == child.url %}
