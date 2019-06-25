@@ -26,13 +26,13 @@ Inspired by celery for python, this is a distributed job runner for .NET Standar
 
 ## Getting Started
 
-#### Install the dotnet cli
+### Install the dotnet cli
 
 We recommend using the (dotnet cli)[https://dotnet.microsoft.com/download] to get started, but it's not a necessity. 
 
 The dotnet cli is part of the (.NET Core SDK)[https://dotnet.microsoft.com/download].
 
-#### Start a Redis instance.
+### Start a Redis instance.
 
 We recommend using (docker)[] to start a local Redis instance for testing. Setting up a production-level Redis instance is out of the scope of this guide.
 
@@ -40,7 +40,7 @@ We recommend using (docker)[] to start a local Redis instance for testing. Setti
 $ docker run -d -p 127.0.0.1:6379:6379 redis:4-alpine
 ```
 
-#### Create a project.
+### Create a project.
 
 Open up a terminal and create a new console project to get started.
 
@@ -49,13 +49,13 @@ $ mkdir myProject && cd myProject
 $ dotnet new console
 ```
 
-#### Add the Gofer.NET NuGet package.
+### Add the Gofer.NET NuGet package.
 
 ```bash
 $ dotnet add package Gofer.NET --version 1.0.0-*
 ```
 
-#### Queue up some jobs.
+### Queue up some jobs.
 
 This example `Program.cs` shows how to queue jobs for the worker pool to process, then start a worker to go and run them. 
 
