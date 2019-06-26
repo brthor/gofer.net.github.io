@@ -34,7 +34,7 @@ $ docker run -d -p 127.0.0.1:6379:6379 redis:4-alpine
 First we will create two projects, one for our primary codebase (usually a website), and the other for our workers.
 
 #### Create Primary Project
-{: .mt-5 .mb-3 }
+{: .mt-6 .mb-3 }
 
 ```bash
 $ mkdir primary
@@ -62,7 +62,7 @@ Open up `primary.csproj` and the result should look like this:
 ```
 
 #### Change Primary Project's Code
-{: .mt-3 .mb-5 }
+{: .mt-6 .mb-3 }
 
 Replace `Program.cs` with the following code:
 
