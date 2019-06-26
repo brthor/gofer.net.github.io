@@ -108,6 +108,7 @@ namespace primary
 ```
 
 #### Create Worker Project
+{: .mt-6 .mb-3 }
 
 ```bash
 $ cd ..
@@ -118,6 +119,7 @@ $ dotnet add reference ../primary
 ```
 
 #### Add LangVersion Property
+{: .mt-6 .mb-3 }
 
 We also need to add the `<LangVersion>7.1</LangVersion>` tag to a `<PropertyGroup>` in `worker.csproj` to enable async main.
 
@@ -139,6 +141,7 @@ Open up `worker.csproj` and the result should look like this:
 ```
 
 #### Change Worker Project's Code
+{: .mt-6 .mb-3 }
 
 Replace `Program.cs` with the following code:
 
@@ -168,6 +171,7 @@ namespace worker
 ```
 
 #### Results
+{: .mt-6 .mb-3 }
 
 Our project structure now looks like this:
 ![Example project in vscode.](./img/example-project-vs-code.jpg 'Example project in vscode.')
@@ -177,6 +181,7 @@ Our project structure now looks like this:
 First open up an extra terminal, we'll need one for the worker, and one for the primary project.
 
 #### Running the Worker
+{: .mt-6 .mb-3 }
 
 In the extra terminal, navigate to the worker project and run it.
 ```bash
@@ -191,6 +196,7 @@ Listening for Jobs...
 ```
 
 #### Running the Primary Project
+{: .mt-6 .mb-3 }
 
 Make sure to leave the extra terminal with the worker running.
 
@@ -201,6 +207,7 @@ $ dotnet run
 ```
 
 #### Viewing the Results
+{: .mt-6 .mb-3 }
 
 Go back to the worker terminal, and you should see tasks being run immediately.
 
