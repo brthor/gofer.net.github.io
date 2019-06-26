@@ -21,6 +21,7 @@ show_nav_children: false
 When you call `TaskQueue.Enqueue(...);`, the expression passed to `.Enqueue()` is parsed to extract the function (and arguments) you wish to execute on the worker. 
 
 #### We Recommend Using Static Functions
+{: .mt-6 .mb-3 }
 
 To keep things simple, we recommend using `private` or `public` `static` functions with few or no arguments that are a part of your own codebase. Using `System` (built-in) functions (like `Console.WriteLine`) works in some cases, but in other cases doesn't seem to work at all.
 
@@ -39,6 +40,7 @@ private static void DoWork()
 ```
 
 #### Non-Static Functions Will Run the Constructor
+{: .mt-6 .mb-3 }
 
 If the queued function is not `static`, the worker will create an instance of the class before executing the method, causing the constructor to be run. For this to work, there must be a Constructor with no arguments. If there is not a constructor with no arguments, an error will be thrown by the worker.
 
@@ -65,6 +67,7 @@ public class Program
 ```
 
 #### No Special Treatment for Async Functions
+{: .mt-6 .mb-3 }
 
 The queued function may be `async` and will behave as expected on the worker. Queuing `async` functions is the same as queuing non-async functions. Using `await` in the `.Enqueue()` method will not work.
 
@@ -84,6 +87,7 @@ await taskQueue.Enqueue(async () => await MyAsyncFunc());
 When you queue a job function to be run, the arguments passed in will be captured, serialized, persisted in Redis, and passed to the worker during execution time. 
 
 #### Use Simple Arguments
+{: .mt-6 .mb-3 }
 
 For best performance, use simple argument types (like strings or integers) that won't take take up too many bytes. When passing database models, it's always a good practice to pass the id of the model, and re-fetch the data on the worker.
 
@@ -99,6 +103,7 @@ await taskQueue.Enqueue(() => Console.WriteLine(aString));
 ```
 
 #### Nested Function Arguments are Run Immediately
+{: .mt-6 .mb-3 }
 
 Using a nested function argument will cause it to be run immediately, and it's return value passed onto the workers.
 In the following example, `MyFunction` is run immediately (before the job is queued), and `"My String"` is passed to the workers as the argument to `Console.WriteLine` as a part of the job. 
@@ -158,6 +163,7 @@ Scheduled jobs are jobs that will only be run once, but not until at least a cer
  - Scheduling a job in the past will cause it to be run immediately (with a slight delay).
 
 #### Set up Two ScheduledTasks
+{: .mt-6 .mb-3 }
 
 ```c#
 public class Program
@@ -183,6 +189,7 @@ public class Program
 ```
 
 #### Canceling a ScheduledTask
+{: .mt-6 .mb-3 }
 
 ScheduledTasks can be canceled using one of two methods, demonstrated in this example.
 
@@ -224,6 +231,7 @@ Recurring tasks may be updated or canceled. They will continue to run until canc
 When you create a recurring task, you specify a unique name for that task. You will need this name to update or cancel the recurring task.
 
 #### Set Up Two Recurring Tasks
+{: .mt-6 .mb-3 }
 
 ```c#
 public class Program
@@ -250,6 +258,7 @@ public class Program
 ```
 
 #### Update a Recurring Task
+{: .mt-6 .mb-3 }
 
 In this example, we set up a recurring task, demonstrate how it can be updated, then finally cancel it.
 
@@ -287,6 +296,7 @@ public class Program
 
 
 #### Cancel a Recurring Task
+{: .mt-6 .mb-3 }
 
 Recurring Tasks can be canceled at any time after they are created, in one of three ways. All three ways are demonstrated in this example. 
 
