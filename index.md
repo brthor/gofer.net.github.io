@@ -15,7 +15,6 @@ Use Gofer.NET to run background jobs (one-off, scheduled, or recurring) on a wor
 
 [Get started now](#getting-started){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 } [View it on GitHub](https://github.com/brthor/Gofer.NET){: .btn .fs-5 .mb-4 .mb-md-0 }
 
-
 ---
 
 ## A minimal example.

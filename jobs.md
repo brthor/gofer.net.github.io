@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Jobs
-nav_order: 2
+nav_order: 3
 description: "Gofer.NET is an easy C# API for distributed background tasks/jobs for .NET Core."
 permalink: /jobs
 
@@ -13,10 +13,10 @@ explicit_nav_children:
     - url:  /jobs#recurring-jobs
       title: Recurring Jobs
 
-show_nav_children: true
+show_nav_children: false
 ---
 
-#### Job Functions
+## Job Functions
 
 When you call `TaskQueue.Enqueue(...);`, the expression passed to `.Enqueue()` is parsed to extract the function (and arguments) you wish to execute on the worker. 
 
@@ -107,18 +107,19 @@ While it's not expected to run jobs multiple times, a failure in a worker node c
 
 This is a common best practice when using distributed job systems.
 
-#### Job Types
+## Job Types
 
 Jobs can be queued:
  - to be run immediately by the first available worker (one-off / fire-and-forget),
  - to be run only after a specific `DateTime` (scheduled),
  - or on a recurring basis (recurring)
 
-## Fire-And-Forget
+### Fire-And-Forget Jobs
 
 Fire-and-forget jobs are very simple, and are the same as have been demonstrated above.
 
-Conceptually, it is just a function that is queued to be run on the workers.
+ - Conceptually, it is just a function that is queued to be run on the workers.
+ - These jobs cannot be canceled or updated once queued to run.
 
 ```c#
 public class Program
@@ -137,7 +138,7 @@ public class Program
 }
 ```
 
-## Scheduled Jobs
+### Scheduled Jobs
 
 Scheduled jobs are jobs that will only be run once, but not until at least a certain `DateTime`.
 
@@ -145,6 +146,8 @@ Scheduled jobs are jobs that will only be run once, but not until at least a cer
  - If the task queue is filling faster than workers are running jobs, a scheduled job may be run after the specified DateTime, but never before it.
  - Incorrect system time set on the worker may cause unexpected run times.
  - Scheduling a job in the past will cause it to be run immediately (with a slight delay).
+
+#### Set up Two ScheduledTasks
 
 ```c#
 public class Program
@@ -155,11 +158,11 @@ public class Program
         var taskClient = new TaskClient(taskQueue);
 
         // Schedule a Task for 5 minutes in the future.
-        await taskQueue.TaskScheduler.AddScheduledTask(() => WriteDate(), TimeSpan.FromMinutes(5));
+        await taskClient.TaskScheduler.AddScheduledTask(() => WriteDate(), TimeSpan.FromMinutes(5));
 
         // Schedule a Task to be run at a specific DateTime
         DateTime runTime = DateTime.UtcNow + TimeSpan.FromDays(1);
-        await taskQueue.TaskScheduler.AddScheduledTask(() => WriteDate(), runTime);
+        await taskClient.TaskScheduler.AddScheduledTask(() => WriteDate(), runTime);
     }
 
     private void WriteDate()
@@ -169,10 +172,143 @@ public class Program
 }
 ```
 
-## Recurring Jobs
+#### Canceling a ScheduledTask
+
+ScheduledTasks can be canceled using one of two methods, demonstrated in this example.
+
+```c#
+public class Program
+{
+    public static async Task Main()
+    {
+        var taskQueue = TaskQueue.Redis("127.0.0.1:6379");
+        var taskClient = new TaskClient(taskQueue);
+
+        // Schedule a Task for 5 minutes in the future.
+        var scheduledTask = await taskClient.TaskScheduler
+            .AddScheduledTask(() => WriteDate(), TimeSpan.FromMinutes(5));
+
+        // Method 1: Cancel with the ScheduledTask Object
+        await taskClient.TaskScheduler.CancelScheduledTask(scheduledTask);
+
+        // Method 2: Cancel with the ScheduledTask TaskKey
+        await taskClient.TaskScheduler.CancelTask(scheduledTask.TaskKey);
+    }
+
+    private void WriteDate()
+    {
+        Console.WriteLine(DateTime.UtcNow.ToString());
+    }
+}
+```
+
+
+### Recurring Jobs
 
 Recurring Jobs are set up to be run on an interval. You may specify a `TimeSpan` based interval, or use a 6-part crontab to specify the interval.
 
 If there are no running workers, recurring tasks will not just stack up on the queue to be run later. At least one running worker is required to process recurring tasks. If the workers are down for a while, recurring tasks will run at the next interval when the workers are started back up, but won't run previous intervals.
 
 Recurring tasks may be updated or canceled. They will continue to run until cancelled.
+
+When you create a recurring task, you specify a unique name for that task. You will need this name to update or cancel the recurring task.
+
+#### Set Up Two Recurring Tasks
+
+```c#
+public class Program
+{
+    public static async Task Main()
+    {
+        var taskQueue = TaskQueue.Redis("127.0.0.1:6379");
+        var taskClient = new TaskClient(taskQueue);
+
+        // Print the Time every Five Minutes, using a TimeSpan interval
+        await taskClient.TaskScheduler.AddRecurringTask(() => WriteDate(), 
+            TimeSpan.FromMinutes(5), "five-minute-timespan");
+
+        // Print the Time every Seven Minutes, using a Crontab interval
+        await taskClient.TaskScheduler.AddRecurringTask(() => WriteDate(), 
+            "0 */7 * * * *", "seven-minute-crontab");
+    }
+
+    private void WriteDate()
+    {
+        Console.WriteLine(DateTime.UtcNow.ToString());
+    }
+}
+```
+
+#### Update a Recurring Task
+
+In this example, we set up a recurring task, demonstrate how it can be updated, then finally cancel it.
+
+Anytime you call `.AddRecurringTask()` with an already existing task name, the existing task will be overwritten, stop running immediately, and the newly specified recurring task will take its place.
+
+```c#
+public class Program
+{
+    public static async Task Main()
+    {
+        var taskQueue = TaskQueue.Redis("127.0.0.1:6379");
+        var taskClient = new TaskClient(taskQueue);
+
+        // Set up a Recurring Task
+        await taskClient.TaskScheduler.AddRecurringTask(() => Write("hello!"), 
+            TimeSpan.FromMinutes(5), "my-recurring-task");
+
+        // Update the Interval
+        await taskClient.TaskScheduler.AddRecurringTask(() => Write("hello!"), 
+            TimeSpan.FromMinutes(7), "my-recurring-task");
+
+        // Change the Interval to Crontab, Change function argument
+        var recurringTask = await taskClient.TaskScheduler.AddRecurringTask(() => Write("crontab!"), 
+            "0 */7 * * * *", "my-recurring-task");
+
+        await taskClient.TaskScheduler.CancelRecurringTask(recurringTask);
+    }
+
+    private void Write(string value)
+    {
+        Console.WriteLine(value);
+    }
+}
+```
+
+
+#### Cancel a Recurring Task
+
+Recurring Tasks can be canceled at any time after they are created, in one of three ways. All three ways are demonstrated in this example. 
+
+It's important to note that when using the `TaskScheduler.CancelTask()` method, the argument is the `TaskKey` which is not the same as the task name you pass into `.AddRecurringTask()`. 
+
+```c#
+public class Program
+{
+    public static async Task Main()
+    {
+        var taskQueue = TaskQueue.Redis("127.0.0.1:6379");
+        var taskClient = new TaskClient(taskQueue);
+
+        // Set up a Recurring Task
+        var recurringTask = await taskClient.TaskScheduler.AddRecurringTask(() => Write("hello!"), 
+            TimeSpan.FromMinutes(5), "my-recurring-task");
+
+        // Method 1: Cancel the RecurringTask with the RecurringTask object
+        await taskClient.TaskScheduler.CancelRecurringTask(recurringTask);
+
+        // Method 2:  Cancel the RecurringTask with the RecurringTask name
+        await taskClient.TaskScheduler.CancelRecurringTask("my-recurring-task");
+
+        // Method 3:  Cancel the RecurringTask with the RecurringTask.TaskKey
+        //   NOTE: recurringTask.TaskKey is NOT the same as the task name "my-recurring-task"
+        //         TaskScheduler.CancelTask() can also be used to cancel ScheduledTasks
+        await taskClient.TaskScheduler.CancelTask(recurringTask.TaskKey);
+    }
+
+    private void Write(string value)
+    {
+        Console.WriteLine(value);
+    }
+}
+```
