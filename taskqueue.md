@@ -10,6 +10,8 @@ permalink: /taskqueue
 
 The `TaskQueue` is the fundamental object for queuing tasks to be run. 
 
+#### Redis Must be Running
+
 In order to create one, you must have a running instance of redis, and a connection string for that instance. For testing, we recommend using [docker](https://docs.docker.com/install/) to set up a local redis instance:
 
 ```bash
