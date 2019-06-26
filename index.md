@@ -55,7 +55,7 @@ The dotnet cli is part of the [.NET Core SDK](https://dotnet.microsoft.com/downl
 
 ### Start a Redis instance.
 
-We recommend using [docker](https://docs.docker.com/install/) to start a local Redis instance for testing. Setting up a production-level Redis instance is out of the scope of this guide.
+We recommend using [docker](https://docs.docker.com/install/) to start a local Redis instance for testing. Setting up a production-level Redis instance is out of the scope of this documentation.
 
 ```bash
 $ docker run -d -p 127.0.0.1:6379:6379 redis:4-alpine

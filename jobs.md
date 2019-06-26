@@ -20,6 +20,8 @@ show_nav_children: false
 
 When you call `TaskQueue.Enqueue(...);`, the expression passed to `.Enqueue()` is parsed to extract the function (and arguments) you wish to execute on the worker. 
 
+#### We Recommend Using Static Functions
+
 To keep things simple, we recommend using `private` or `public` `static` functions with few or no arguments that are a part of your own codebase. Using `System` (built-in) functions (like `Console.WriteLine`) works in some cases, but in other cases doesn't seem to work at all.
 
 ```c#
@@ -35,6 +37,8 @@ private static void DoWork()
     Console.WriteLine("Doing work...");
 }
 ```
+
+#### Non-Static Functions Will Run the Constructor
 
 If the queued function is not `static`, the worker will create an instance of the class before executing the method, causing the constructor to be run. For this to work, there must be a Constructor with no arguments. If there is not a constructor with no arguments, an error will be thrown by the worker.
 
@@ -60,7 +64,9 @@ public class Program
 }
 ```
 
-The queued function may be `async` and will behave as expected on the worker. Queuing `async` functions is the same as queuing non-async functions. Using `await` in the `.Enqueue()` will not work.
+#### No Special Treatment for Async Functions
+
+The queued function may be `async` and will behave as expected on the worker. Queuing `async` functions is the same as queuing non-async functions. Using `await` in the `.Enqueue()` method will not work.
 
 ```c#
 // Enqueue async methods the same way as non-async.
@@ -73,9 +79,11 @@ await taskQueue.Enqueue(async () => await MyAsyncFunc());
 ```
 
 
-#### Job Arguments
+### Job Arguments
 
 When you queue a job function to be run, the arguments passed in will be captured, serialized, persisted in Redis, and passed to the worker during execution time. 
+
+#### Use Simple Arguments
 
 For best performance, use simple argument types (like strings or integers) that won't take take up too many bytes. When passing database models, it's always a good practice to pass the id of the model, and re-fetch the data on the worker.
 
@@ -90,16 +98,18 @@ var aString = "A string";
 await taskQueue.Enqueue(() => Console.WriteLine(aString));
 ```
 
+#### Nested Function Arguments are Run Immediately
+
 Using a nested function argument will cause it to be run immediately, and it's return value passed onto the workers.
 In the following example, `MyFunction` is run immediately (before the job is queued), and `"My String"` is passed to the workers as the argument to `Console.WriteLine` as a part of the job. 
 ```c#
 Func<string> MyFunction = () => "My String";
 
+// MyFunction() will be run immediately, not on the worker
 await taskQueue.Enqueue(() => Console.WriteLine(MyFunction()));
 ```
-To be entirely clear, using this pattern will not cause `MyFunction` to be run on the worker, as part of the job.
 
-#### Idempotence
+### Idempotence
 
 As a best practice, all jobs should be idempotent. Putting it simply, if a job is run more than once, everything should still be okay, and the results the same as if it were run once.
 

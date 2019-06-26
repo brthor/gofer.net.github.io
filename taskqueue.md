@@ -46,8 +46,9 @@ public async Task Main()
 
 The `TaskClient` class is required to add scheduled or recurring tasks, or to start a worker. 
 
-[Read more about scheduled and recurring tasks.](./jobs).
-[Read more about starting a worker.](./workers).
+[Read more about scheduled and recurring tasks.](./jobs)
+
+[Read more about starting a worker.](./workers)
 
 Use the `TaskClient.TaskQueue` property to access the TaskQueue and enqueue tasks:
 
